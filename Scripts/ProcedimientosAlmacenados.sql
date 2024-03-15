@@ -220,23 +220,4 @@ DELIMITER ;
 
 /*EJEMPLO DE EJECUCION
 
-*/
-
-
-DELIMITER //
-
-CREATE PROCEDURE insertarNuevoProyecto(
-    IN nombreProyecto VARCHAR(50),
-    IN EncargadoProyecto VARCHAR(50),
-    IN DescripcionCasoProyecto INT,
-    IN EstadoCaso VARCHAR(50),
-    IN BitacoraCaso VARCHAR(50),
-)
-BEGIN
-    INSERT INTO empleados (nombre, apellido, edad, cargo)
-    VALUES (p_nombre, p_apellido, p_edad, p_cargo);
-END;
-//
-
-DELIMITER ;
 
