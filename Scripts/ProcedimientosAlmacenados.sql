@@ -1,5 +1,54 @@
-USE sistemaparacrearsistemas;
+USE SistemaTelecomunicaciones;
 
+/*Extras necesarios*/
+
+DELIMITER //
+
+CREATE TRIGGER tr_actualizar_porcentajeAvance
+AFTER INSERT ON bitacorarequerimiento
+FOR EACH ROW
+BEGIN
+    DECLARE totalPorcentajeAvance INT;
+
+    /* Calcular la suma de todos los porcentajes de avance para el caso requerido*/
+    SELECT SUM(PorcentajeDeAvanceRealizadoEnBitacora) INTO totalPorcentajeAvance
+    FROM bitacorarequerimiento
+    WHERE FK_idCasoRequerimiento = NEW.FK_idCasoRequerimiento;
+
+    /*Actualizar el porcentajeAvance en CasoRequerimiento*/
+    UPDATE CasoRequerimiento
+    SET porcentajeAvance = totalPorcentajeAvance
+    WHERE PK_idCasoRequerimiento = NEW.FK_idCasoRequerimiento;
+END//
+
+DELIMITER ;
+
+
+/*Retorna un string con el nivel de acceso de un empleado
+-Su utilidad puede ser mostrar diferentes interfaces graficas,
+validar que de veras es un programador o etc*/
+/*Funcional*/
+
+
+DELIMITER //
+
+CREATE FUNCTION sp_obtenerNivelDeAccesoDeEmpleado(IdEmpleado INT)
+RETURNS VARCHAR(50)
+BEGIN
+    DECLARE nivelAcceso VARCHAR(50);
+    
+    SELECT n.nombreNivelDeAcceso INTO nivelAcceso
+    FROM empleados AS e
+    INNER JOIN niveldeacceso AS n 
+    ON n.PK_idNivelDeAcceso = e.FK_idNivelDeAcceso 
+    WHERE e.PK_idEmpleado = IdEmpleado
+    LIMIT 1;
+
+    RETURN nivelAcceso;
+END;
+//
+
+DELIMITER ;
 
 
 
@@ -150,22 +199,24 @@ BEGIN
 
     /* Variable para contar filas encontradas en el INNER JOIN */
     SELECT COUNT(*) INTO row_count
-    FROM Tabla1 t1
-    INNER JOIN Tabla2 t2 ON t1.columna_comun = t2.columna_comun
-    WHERE WHERE_condition;
+    FROM casorequerimiento t1
+    INNER JOIN bitacorarequerimiento t2 ON t1.PK_idCasoRequerimiento = t2.FK_idCasoRequerimiento
+    WHERE t2.FK_idCasoRequerimiento = idCasoRequerimiento;
 
     /* Si no hay filas encontradas en el INNER JOIN, mostrar las bitácoras del caso de requerimiento*/
     IF row_count = 0 THEN
-       SELECT 'No hay datos';
+       SELECT 'No hay datos' AS 'Mensaje';
     ELSE
         /* Si hay filas encontradas en el INNER JOIN, mostrar el resultado del INNER JOIN */
         SELECT t1.*, t2.*
         FROM casorequerimiento t1
         INNER JOIN bitacorarequerimiento t2 ON t1.PK_idCasoRequerimiento = t2.FK_idCasoRequerimiento
+        WHERE t2.FK_idCasoRequerimiento = idCasoRequerimiento;
     END IF;
 END//
 
 DELIMITER ;
+
 
 /*EJEMPLO DE EJECUCION
 
@@ -189,52 +240,3 @@ END;
 
 DELIMITER ;
 
-/*Extras*/
-
-DELIMITER //
-
-CREATE TRIGGER tr_actualizar_porcentajeAvance
-AFTER INSERT ON bitacorarequerimiento
-FOR EACH ROW
-BEGIN
-    DECLARE totalPorcentajeAvance INT;
-
-    /* Calcular la suma de todos los porcentajes de avance para el caso requerido*/
-    SELECT SUM(PorcentajeDeAvanceRealizadoEnBitacora) INTO totalPorcentajeAvance
-    FROM bitacorarequerimiento
-    WHERE FK_idCasoRequerimiento = NEW.FK_idCasoRequerimiento;
-
-    /*Actualizar el porcentajeAvance en CasoRequerimiento*/
-    UPDATE CasoRequerimiento
-    SET porcentajeAvance = totalPorcentajeAvance
-    WHERE PK_idCasoRequerimiento = NEW.FK_idCasoRequerimiento;
-END//
-
-DELIMITER ;
-
-
-/*Retorna un string con el nivel de acceso de un empleado
--Su utilidad puede ser mostrar diferentes interfaces graficas,
-validar que de veras es un programador o etc*/
-/*Funcional*/
-
-
-DELIMITER //
-
-CREATE FUNCTION sp_obtenerNivelDeAccesoDeEmpleado(IdEmpleado INT)
-RETURNS VARCHAR(50)
-BEGIN
-    DECLARE nivelAcceso VARCHAR(50);
-    
-    SELECT n.nombreNivelDeAcceso INTO nivelAcceso
-    FROM empleados AS e
-    INNER JOIN niveldeacceso AS n 
-    ON n.PK_idNivelDeAcceso = e.FK_idNivelDeAcceso 
-    WHERE e.PK_idEmpleado = IdEmpleado
-    LIMIT 1;
-
-    RETURN nivelAcceso;
-END;
-//
-
-DELIMITER ;

@@ -1,7 +1,7 @@
 /*Creacion de la base de datos*/
-DROP DATABASE IF EXISTS Sistema;
-CREATE DATABASE IF NOT EXISTS Sistema;
-USE Sistema;
+DROP DATABASE IF EXISTS SistemaTelecomunicaciones;
+CREATE DATABASE IF NOT EXISTS SistemaTelecomunicaciones;
+USE SistemaTelecomunicaciones;
 /*Creacion de tablas*/
 
 DROP TABLE IF EXISTS `NivelDeAcceso`;

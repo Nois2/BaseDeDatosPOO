@@ -1,5 +1,5 @@
 
-USE sistemaparacrearsistemas;
+USE SistemaTelecomunicaciones;
 
 /*Insercion de datos para niveldeacceso*/
 INSERT INTO niveldeacceso(nombreNivelDeAcceso, funcionalidadDeNivelDeAcceso) 
@@ -35,4 +35,4 @@ INSERT INTO estadoBitacora(nombreEstadoBitacora,descripcionEstadoBitacora)
 VALUES 
 ('Prueba','Prueba realizada por Noel'),
 ('En espera de respuesta', 'Parrafo1'),
-('Solicitud rechazada');
+('Solicitud rechazada', 'Parrafo1');
