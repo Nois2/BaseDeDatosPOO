@@ -1,0 +1,5 @@
+EJECUTAR EN EL SIGUIENTE ORDEN:
+
+-BD_Sistema.sql
+-InsercionDeDatos.sql
+-ProcedimientosAlmacenados.sql
