@@ -4,6 +4,7 @@ USE sistemaparacrearsistemas;
 
 
 /*1*/
+
 DELIMITER //
 
 CREATE PROCEDURE sp_JefeDeAreaFuncional_CrearNuevoSistema(
@@ -14,47 +15,54 @@ CREATE PROCEDURE sp_JefeDeAreaFuncional_CrearNuevoSistema(
     OUT mensaje VARCHAR(255)
 )
 BEGIN
-    DECLARE porcentajeAvance INT;
     DECLARE error_occurred BOOLEAN DEFAULT FALSE;
     DECLARE nivelAcceso VARCHAR(50);
+    DECLARE idProyectoPorSelect INT;
+    DECLARE idCasoRequerimientoPorID INT;
 
-    -- Verificar que ningun parametro vaya vacIo
-    IF sp_idEmpleado IS NULL OR sp_nombreProyecto = '' OR sp_URL_requerimiento_documentoPDF = '' OR sp_descripcionProyecto = '' THEN
-        SET mensaje = 'Uno o dos parametros estan vacios.';
+    -- Verificar que ningún parámetro vaya vacío
+    IF sp_idEmpleado IS NULL OR sp_nombreProyecto = '' OR sp_URL_requerimiento_documentoPDF = '' OR descripcionProyecto = '' THEN
+        SET mensaje = 'Uno o más parámetros están vacíos.';
         SET error_occurred = TRUE;
     ELSE
         -- Obtener el nivel de acceso del empleado
-        SET nivelAcceso = obtenerNivelDeAccesoDeEmpleado(idEmpleado);
+        SET nivelAcceso = obtenerNivelDeAccesoDeEmpleado(sp_idEmpleado);
 
         -- Verificar si el nivel de acceso permite crear casos sin adjunto
-        IF nivelAcceso = 'Jefes de areas funcionales' THEN
-            SET error_occurred = FALSE;
+        IF nivelAcceso = 'Jefes de áreas funcionales' THEN
+            -- Si no hay errores, crear proyecto, caso y bitácora
+            BEGIN
+                -- Se crea el Proyecto
+                INSERT INTO proyectos (nombreProyecto, URL_requerimiento_documentoPDF, FK_idEmpleado)
+                VALUES (sp_nombreProyecto, sp_URL_requerimiento_documentoPDF, sp_idEmpleado);
+                -- Se obtiene el ID del proyecto recién creado
+                SET idProyectoPorSelect = LAST_INSERT_ID();
+                -- Se inicializa el casoRequerimiento
+                INSERT INTO casorequerimiento (TituloCasoRequerimiento, porcentajeAvance, FK_idEstadoRequerimiento, FK_idEmpleado, FK_idProyecto)
+                VALUES ('Inicialización', 0, 1, sp_idEmpleado, idProyectoPorSelect);
+                -- Se obtiene el ID del casoRequerimiento recién creado
+                SET idCasoRequerimientoPorID = LAST_INSERT_ID();
+                -- Se inicializa su primera bitácora
+                INSERT INTO bitacorarequerimiento (DescripcionDeAvanceEnRequerimiento, PorcentajeDeAvanceRealizadoEnBitacora, fechaActualizacionRequerimiento, FK_idEstadoBitacora, FK_idCasoRequerimiento)
+                VALUES ('Inicio De Proyecto', 0, NOW(), 1, idCasoRequerimientoPorID);
+                -- Se asume que no hubo errores (Mensaje de Salida)
+                SET mensaje = 'Proyecto creado correctamente.';
+            END;
         ELSE
             SET mensaje = 'No tienes permiso para crear casos sin adjunto.';
             SET error_occurred = TRUE;
         END IF;
     END IF;
 
+    -- Si hay errores, establecer el porcentaje de avance en 0
     IF error_occurred THEN
-        SET porcentajeAvance = 0; 
-    ELSE
-        -- Si no hay errores hazlo
-        -- Declara el porcentaje de avance en 10
-        SET porcentajeAvance = 0;
-        
-        -- Se crea el Proyecto
-        INSERT INTO proyectos (nombreProyecto, URL_requerimiento_documentoPDF, FK_idEmpleado)
-        VALUES (sp_nombreProyecto, sp_URL_requerimiento_documentoPDF, sp_idEmpleadoidEmpleado);
-        -- Se crea su casoRequerimiento inicializado
-
-        INSERT INTO casorequerimiento (TituloCasoRequerimiento,porcentajeAvance,FK_idEstadoRequerimiento,FK_idBitacoraRequerimiento,FK_)
-        -- Se asume que no hubo errores (Mensaje de Salida)
-        SET mensaje = 'Proyecto creado correctamente.';
+        SET mensaje = 'Error al crear el proyecto.';
     END IF;
-END;
-//
+END//
 
 DELIMITER ;
+
+
 
 /*EJEMPLO DE EJECUCION
 

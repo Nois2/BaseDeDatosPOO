@@ -27,3 +27,7 @@ VALUES
 INSERT INTO estadorequerimiento (nombreRequerimiento,descripcionDeEstadoRequerimiento)
 VALUES
 ('En espera de respuesta','Parrafo1UDB');
+
+
+INSERT INTO estadoBitacora(nombreEstadoBitacora,descripcionEstadoBitacora)
+VALUES ('Prueba','Prueba realizada por Noel');
