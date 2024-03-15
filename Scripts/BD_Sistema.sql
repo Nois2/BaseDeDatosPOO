@@ -1,7 +1,7 @@
 /*Creacion de la base de datos*/
-DROP DATABASE IF EXISTS SistemaParaCrearSistemas;
-CREATE DATABASE IF NOT EXISTS SistemaParaCrearSistemas;
-USE SistemaParaCrearSistemas;
+DROP DATABASE IF EXISTS Sistema;
+CREATE DATABASE IF NOT EXISTS Sistema;
+USE Sistema;
 /*Creacion de tablas*/
 
 DROP TABLE IF EXISTS `NivelDeAcceso`;
@@ -71,7 +71,7 @@ DROP TABLE IF EXISTS `CasoRequerimiento`;
 CREATE TABLE IF NOT EXISTS `CasoRequerimiento` (
     `PK_idCasoRequerimiento` INT AUTO_INCREMENT PRIMARY KEY,
     `TituloCasoRequerimiento` VARCHAR(250) NOT NULL,
-    `porcentajeAvance` INT NOT NULL,
+    `porcentajeAvance` INT NOT NULL, /*Este es un campo calculado*/
     `FK_idEstadoRequerimiento` INT NOT NULL,
     `FK_idEmpleado` INT NOT NULL,
     `FK_idProyecto` INT NOT NULL,

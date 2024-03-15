@@ -26,8 +26,13 @@ VALUES
 
 INSERT INTO estadorequerimiento (nombreRequerimiento,descripcionDeEstadoRequerimiento)
 VALUES
-('En espera de respuesta','Parrafo1UDB');
+('En espera de respuesta','Parrafo1UDB'),
+('Fase Inicial','Fuentes de ortiz'),
+('Finalizado', 'Fuentes de ortiz');
 
 
 INSERT INTO estadoBitacora(nombreEstadoBitacora,descripcionEstadoBitacora)
-VALUES ('Prueba','Prueba realizada por Noel');
+VALUES 
+('Prueba','Prueba realizada por Noel'),
+('En espera de respuesta', 'Parrafo1'),
+('Solicitud rechazada');
